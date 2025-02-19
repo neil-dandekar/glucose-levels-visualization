@@ -36,7 +36,7 @@
     <body>
         <div id="controls">
             <label for="daySlider">
-                Select Day (slide me!):
+                Select Day:
                 <span id="dayValue">1</span>
             </label>
             <input
@@ -47,6 +47,7 @@
                 step="1"
                 value="1"
             />
+            <button id="animateButton">▶ Animate</button>
         </div>
 
         <script>
@@ -402,6 +403,47 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
                 // moderate re-energize
                 simulation.alpha(0.5).restart();
             }
+
+            // animation
+            let animationInterval = null;
+            let isAnimating = false; // Flag to track animation state
+
+            function animateSlider() {
+                let slider = document.getElementById("daySlider");
+                let maxDay = 10;
+
+                if (isAnimating) {
+                    // If currently animating, pause the animation
+                    clearInterval(animationInterval);
+                    animationInterval = null;
+                    isAnimating = false;
+                } else {
+                    // If currently paused, resume the animation
+                    isAnimating = true;
+
+                    animationInterval = setInterval(() => {
+                        if (currentDay > maxDay) {
+                            // clearInterval(animationInterval); // Stop at maxDay
+                            // animationInterval = null; // Clear reference
+                            // isAnimating = false;
+                            // return;
+                            currentDay = 1; // Reset to 1
+                        }
+
+                        console.log(`Animating Day: ${currentDay}`); // Debug log
+                        slider.value = currentDay; // Move the slider
+                        document.getElementById("dayValue").textContent = currentDay;
+                        updateDay(currentDay); // Update visualization
+
+                        currentDay++;
+                    }, 600); // 1 second per step
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                document.getElementById("animateButton").addEventListener("click", animateSlider);
+                });
+
 
             d3.csv("data.csv").then((data) => {
                 data.forEach((d) => {
