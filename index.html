@@ -70,8 +70,8 @@
             function initChart(data) {
                 d3.select("svg").remove();
 
-                width = 2200;
-                height = 1250;
+                width = window.innerWidth;
+                height = window.innerHeight;
 
                 svg = d3
                     .select("body")
