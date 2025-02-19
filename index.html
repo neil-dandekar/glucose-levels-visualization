@@ -25,6 +25,12 @@
                 padding: 10px;
                 border-radius: 8px;
             }
+            svg {
+                display: block;
+                margin: auto;
+                max-width: 100%;
+                height: auto;
+            }
         </style>
     </head>
 
@@ -46,14 +52,13 @@
 
         <script>
             const margin = [120, 100, 100, 180];
-            let width = window.innerWidth ,
+            let width = window.innerWidth,
                 height = window.innerHeight;
 
             let svg, tooltip, simulation, circles;
             let currentDay = 1;
             let globalData = [];
 
-            const BMI_QUARTILES = [27, 30, 35];
             const diabetesCategories = [
                 "Non-Diabetic",
                 "Pre-Diabetic",
@@ -77,7 +82,9 @@
                     .select("body")
                     .append("svg")
                     .attr("width", width)
-                    .attr("height", height);
+                    .attr("height", height)
+                    .attr("viewBox", `0 0 ${width} ${height}`) // ✅ Ensures consistency
+                    .attr("preserveAspectRatio", "xMidYMid meet"); // ✅ Keeps aspect ratio stable
 
                 tooltip = d3
                     .select("body")
@@ -117,7 +124,6 @@
                     data.forEach((d) => allDays.push(d[col]));
                 }
                 let maxDayVal = d3.max(allDays) || 100;
-                if (maxDayVal < 0) maxDayVal = 100;
 
                 let xScale = d3
                     .scaleBand()
@@ -145,29 +151,12 @@
                     .style("text-anchor", "middle")
                     .style("font-size", "16px");
 
-                // X AXIS LABEL
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height - margin[2] + 50)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "18px")
-                    .text("Diabetes Status");
-
                 // Y Axis
                 svg.append("g")
                     .attr("transform", `translate(${margin[3]},0)`)
                     .call(d3.axisLeft(yScale))
                     .selectAll("text")
                     .style("font-size", "16px");
-
-                // Y AXIS LABEL
-                svg.append("text")
-                    .attr("x", -height / 2)
-                    .attr("y", margin[3] - 70)
-                    .attr("text-anchor", "middle")
-                    .attr("transform", "rotate(-90)")
-                    .style("font-size", "18px")
-                    .text("Glucose Level (mg/dL)");
 
                 simulation = d3
                     .forceSimulation(data)
@@ -208,38 +197,7 @@
                         (d) => gutColors[d.gut_microbiome_health] || "#999"
                     )
                     .attr("r", (d) => (d.bmi > 0 ? sizeScale(d.bmi) : 3))
-                    .style("opacity", 0.7)
-                    .on("mouseover", function (d) {
-                        tooltip.style("visibility", "visible");
-                        d3.select(this)
-                            .transition()
-                            .duration(200)
-                            .style("opacity", 1);
-                    })
-                    .on("mousemove", function (d) {
-                        let e = d3.event;
-                        tooltip.html(`
-<b>ID:</b> ${d.participant_id}<br/>
-BMI: ${d.bmi}<br/>
-Gut Health: ${d.gut_microbiome_health}<br/>
-Glucose (Day ${currentDay}): ${d["day" + currentDay]}
-            `);
-                        tooltip
-                            .style("left", e.pageX + "px")
-                            .style(
-                                "top",
-                                e.pageY - tooltip.node().offsetHeight + "px"
-                            );
-                    })
-                    .on("mouseout", function (d) {
-                        tooltip.style("visibility", "hidden");
-                        d3.select(this)
-                            .transition()
-                            .duration(200)
-                            .style("opacity", 0.7);
-                    });
-
-                setTimeout(() => simulation.alphaDecay(0.1), 3000);
+                    .style("opacity", 0.7);
             }
 
             function ticked() {
