@@ -266,18 +266,91 @@ Day${currentDay}: ${d["day" + currentDay]}
                 setTimeout(() => simulation.alphaDecay(0.1), 3000);
 
                 // ========== BMI Legend with example circle sizes ========== //
-                let BMIlegend = svg
-                    .append("g")
-                    .attr(
-                        "transform",
-                        `translate(${width - 300}, ${margin[0] + 40})`
-                    );
+                // ========== Combined Legend Box ========== //
+                let legendBox = svg.append("g")
+                    .attr("transform", `translate(${width - 320}, ${margin[0]})`);
+
+                // Add the box background
+                legendBox.append("rect")
+                    .attr("width", 220)  // Adjust size if needed
+                    .attr("height", 160)  // Adjust size if needed
+                    .attr("fill", "white")
+                    .attr("stroke", "black")
+                    .attr("rx", 10)  // Rounded corners
+                    .attr("ry", 10)
+                    .attr("opacity", 0.8);
+
+                // Title: "Key"
+                legendBox.append("text")
+                    .attr("x", 110)  // Centered inside the box
+                    .attr("y", 20)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "16px")
+                    .style("font-weight", "bold")
+                    .text("Key");
+
+                // ========== BMI Legend ========== //
+                let BMIlegend = legendBox.append("g")
+                    .attr("transform", `translate(10, 40)`);
 
                 BMIlegend.append("text")
                     .attr("x", 0)
                     .attr("y", -5)
                     .style("font-size", "14px")
+                    .style("font-weight", "bold")
                     .text("BMI Sizes");
+
+                [27, 30, 35].forEach((b, i) => {
+                    let g = BMIlegend.append("g")
+                        .attr("transform", `translate(0,${i * 30 + 20})`);
+
+                    g.append("circle")
+                        .attr("cx", 20)
+                        .attr("cy", 0)
+                        .attr("r", sizeScale(b))
+                        .attr("fill", "gray")
+                        .attr("stroke", "black")
+                        .style("opacity", 0.7);
+
+                    g.append("text")
+                        .attr("x", 50)
+                        .attr("y", 5)
+                        .style("font-size", "14px")
+                        .text(`BMI~${b}`);
+                });
+
+                // ========== Gut Health Legend ========== //
+                let GHlegend = legendBox.append("g")
+                    .attr("transform", `translate(10, 120)`);
+
+                GHlegend.append("text")
+                    .attr("x", 0)
+                    .attr("y", -5)
+                    .style("font-size", "14px")
+                    .style("font-weight", "bold")
+                    .text("Gut Health");
+
+                const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
+                [1, 2, 3].forEach((v, i) => {
+                    let gg = GHlegend.append("g")
+                        .attr("transform", `translate(0, ${i * 30 + 10})`);
+
+                    gg.append("rect")
+                        .attr("x", 0)
+                        .attr("y", -10)
+                        .attr("width", 20)
+                        .attr("height", 20)
+                        .attr("fill", gutColors[v] || "#999")
+                        .style("opacity", 0.7)
+                        .attr("stroke", "black");
+
+                    gg.append("text")
+                        .attr("x", 30)
+                        .attr("y", 5)
+                        .style("font-size", "14px")
+                        .text(healthLabels[v]);
+                });
+
 
                 // use quartiles 27,30,35
                 [27, 30, 35].forEach((b, i) => {
@@ -302,21 +375,21 @@ Day${currentDay}: ${d["day" + currentDay]}
                 });
 
                 // ========== Gut Health Legend: discrete squares (1,2,3) ========== //
-                let GHlegend = svg
-                    .append("g")
-                    .attr(
-                        "transform",
-                        `translate(${width - 100}, ${margin[0] + 40})`
-                    );
+                // let GHlegend = svg
+                //     .append("g")
+                //     .attr(
+                //         "transform",
+                //         `translate(${width - 100}, ${margin[0] + 40})`
+                //     );
 
-                GHlegend.append("text")
-                    .attr("x", 0)
-                    .attr("y", -5)
-                    .style("font-size", "14px")
-                    .text("Gut Health");
+                // GHlegend.append("text")
+                //     .attr("x", 0)
+                //     .attr("y", -5)
+                //     .style("font-size", "14px")
+                //     .text("Gut Health");
 
                 let ghVals = [1, 2, 3];
-                const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
+                // const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
                 ghVals.forEach((v, i) => {
                     let gg = GHlegend.append("g").attr(
                         "transform",
