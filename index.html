@@ -24,6 +24,11 @@
                 background: rgba(255, 255, 255, 0.8);
                 padding: 10px;
                 border-radius: 8px;
+            
+            }
+            #controls label{
+                font-size: larger;
+                font-weight: bold;
             }
         </style>
     </head>
@@ -31,7 +36,7 @@
     <body>
         <div id="controls">
             <label for="daySlider">
-                Select Day:
+                Select Day (slide me!):
                 <span id="dayValue">1</span>
             </label>
             <input
@@ -63,9 +68,9 @@
 
             // Discrete color mapping for gut health => 1,2,3
             const gutColors = {
-                3: "#a8c8ea", // light blue
+                1: "#a8c8ea", // light blue
                 2: "#4f93d2", // medium
-                1: "#084594", // dark
+                3: "#084594", // dark
             };
 
             // We'll keep a reference for yScale to debug
@@ -106,16 +111,22 @@
                     // .text("D3 Swarm - Day Slider (Discrete GH)");
                     .text("From Normal to Risk: Understanding Diabetes Stages");
                     
-
+                const annotation = ["This plot compares the average glucose levels of patients categorized as by diabetic status, with bubble size representing BMI and color indicating gut health status over 10 days.",
+                        "Biggest Takeaway: Type 2 diabetics show much higher variability in average glucose levels. Non-diabetic and pre-diabetic groups have more stable glucose levels."]
                 // Subtitle
                 svg.append("text")
                     .attr("x", width / 2)
                     .attr("y", margin[0] / 2 + 30)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "20px")
-                    .text(
-                        "Check console logs for day values; color=blue(gut:1,2,3), size=BMI, y=dayX with gentler transitions"
-                    );
+                    .style("font-size", "15px")
+                    .selectAll('tspan')
+                    .data(annotation)
+                    .enter()
+                    .append("tspan")
+                    .attr("x", width / 2)  // Keep x position the same
+                    .attr("dy", (d, i) => i * 20)  // ✅ Move each line down
+                    .text(d => d);
+                
 
                 // Gather all day columns
                 let allDays = [];
@@ -176,7 +187,7 @@
                     .attr("text-anchor", "middle")
                     .attr("transform", "rotate(-90)")
                     .style("font-size", "18px")
-                    .text("Glucose Level (mg/dL)");
+                    .text("Avgerage Glucose Level (mg/dL)");
                 
 
                 // Single force sim with moderate y strength for smoother transitions
@@ -245,10 +256,10 @@
                         let e = d3.event;
                         tooltip.html(`
 <b>ID:</b> ${d.participant_id}<br/>
+Gender: ${d.gender} <br/>
+Gut: ${healthStatus} <br/>
 BMI: ${d.bmi.toFixed(2)}<br/>
-Gut: ${healthStatus} (Value ${d.gut_microbiome_health})<br/>
-Day ${currentDay}: ${d["day" + currentDay].toFixed(2)}<br/>
-Gender: ${d.gender}
+Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
             `);
                         let tipW = tooltip.node().offsetWidth;
                         let tipH = tooltip.node().offsetHeight;
@@ -269,7 +280,7 @@ Gender: ${d.gender}
 
                 // ========== Combined Legend Box ========== //
                 let legendBox = svg.append("g")
-                    .attr("transform", `translate(${width - 320}, ${margin[0]})`);
+                    .attr("transform", `translate(${width - 270}, ${margin[0] + 50})`);
 
                 // Adjusted Box Size for More Space
                 legendBox.append("rect")
