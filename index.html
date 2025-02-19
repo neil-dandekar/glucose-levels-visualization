@@ -241,12 +241,14 @@
                             .style("opacity", 1);
                     })
                     .on("mousemove", function (d) {
+			let healthStatus = healthLabels[d.gut_microbiome_health] || "Unknown";
                         let e = d3.event;
                         tooltip.html(`
 <b>ID:</b> ${d.participant_id}<br/>
-BMI: ${d.bmi}<br/>
-Gut: ${d.gut_microbiome_health}<br/>
-Day${currentDay}: ${d["day" + currentDay]}
+BMI: ${d.bmi.toFixed(2)}<br/>
+Gut: ${healthStatus} (Value ${d.gut_microbiome_health})<br/>
+Day ${currentDay}: ${d["day" + currentDay].toFixed(2)}<br/>
+Gender: ${d.gender}
             `);
                         let tipW = tooltip.node().offsetWidth;
                         let tipH = tooltip.node().offsetHeight;
@@ -265,63 +267,63 @@ Day${currentDay}: ${d["day" + currentDay]}
                 // alpha decay after 3s
                 setTimeout(() => simulation.alphaDecay(0.1), 3000);
 
-                // ========== BMI Legend with example circle sizes ========== //
                 // ========== Combined Legend Box ========== //
                 let legendBox = svg.append("g")
                     .attr("transform", `translate(${width - 320}, ${margin[0]})`);
 
-                // Add the box background
+                // Adjusted Box Size for More Space
                 legendBox.append("rect")
-                    .attr("width", 220)  // Adjust size if needed
-                    .attr("height", 160)  // Adjust size if needed
+                    .attr("width", 240)  // Slightly wider to prevent text overflow
+                    .attr("height", 320) // Increased height for better spacing
                     .attr("fill", "white")
                     .attr("stroke", "black")
-                    .attr("rx", 10)  // Rounded corners
+                    .attr("rx", 10)
                     .attr("ry", 10)
                     .attr("opacity", 0.8);
 
                 // Title: "Key"
                 legendBox.append("text")
-                    .attr("x", 110)  // Centered inside the box
+                    .attr("x", 120)  // Centered inside the box
                     .attr("y", 20)
                     .attr("text-anchor", "middle")
                     .style("font-size", "16px")
                     .style("font-weight", "bold")
                     .text("Key");
 
-                // ========== BMI Legend ========== //
+                // ========== BMI Legend (More Space) ========== //
                 let BMIlegend = legendBox.append("g")
-                    .attr("transform", `translate(10, 40)`);
+                    .attr("transform", `translate(10, 40)`);  // Slightly shifted
 
                 BMIlegend.append("text")
                     .attr("x", 0)
-                    .attr("y", -5)
+                    .attr("y", -9)
                     .style("font-size", "14px")
                     .style("font-weight", "bold")
                     .text("BMI Sizes");
 
-                [27, 30, 35].forEach((b, i) => {
-                    let g = BMIlegend.append("g")
-                        .attr("transform", `translate(0,${i * 30 + 20})`);
+                // Use correct positioning to avoid overlap
+                // [27, 30, 35].forEach((b, i) => {
+                //     let g = BMIlegend.append("g")
+                //         .attr("transform", `translate(0,${i * 35 + 20})`);  // More vertical space
 
-                    g.append("circle")
-                        .attr("cx", 20)
-                        .attr("cy", 0)
-                        .attr("r", sizeScale(b))
-                        .attr("fill", "gray")
-                        .attr("stroke", "black")
-                        .style("opacity", 0.7);
+                //     g.append("circle")
+                //         .attr("cx", 20)
+                //         .attr("cy", 0)
+                //         .attr("r", sizeScale(b))
+                //         .attr("fill", "gray")
+                //         .attr("stroke", "black")
+                //         .style("opacity", 0.7);
 
-                    g.append("text")
-                        .attr("x", 50)
-                        .attr("y", 5)
-                        .style("font-size", "14px")
-                        .text(`BMI~${b}`);
-                });
+                //     g.append("text")
+                //         .attr("x", 50)
+                //         .attr("y", 5)
+                //         .style("font-size", "14px")
+                //         .text(`BMI~${b}`);
+                // });
 
-                // ========== Gut Health Legend ========== //
+                // ========== Gut Health Legend (More Space) ========== //
                 let GHlegend = legendBox.append("g")
-                    .attr("transform", `translate(10, 120)`);
+                    .attr("transform", `translate(10, 210)`);  // Shifted down further
 
                 GHlegend.append("text")
                     .attr("x", 0)
@@ -333,7 +335,7 @@ Day${currentDay}: ${d["day" + currentDay]}
                 const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
                 [1, 2, 3].forEach((v, i) => {
                     let gg = GHlegend.append("g")
-                        .attr("transform", `translate(0, ${i * 30 + 10})`);
+                        .attr("transform", `translate(0, ${i * 35 + 10})`);  // More spacing
 
                     gg.append("rect")
                         .attr("x", 0)
@@ -350,6 +352,7 @@ Day${currentDay}: ${d["day" + currentDay]}
                         .style("font-size", "14px")
                         .text(healthLabels[v]);
                 });
+
 
 
                 // use quartiles 27,30,35
@@ -388,22 +391,22 @@ Day${currentDay}: ${d["day" + currentDay]}
                 //     .style("font-size", "14px")
                 //     .text("Gut Health");
 
-                let ghVals = [1, 2, 3];
+                // let ghVals = [1, 2, 3];
                 // const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
-                ghVals.forEach((v, i) => {
-                    let gg = GHlegend.append("g").attr(
-                        "transform",
-                        `translate(0, ${i * 30 + 20})`
-                    );
+                // ghVals.forEach((v, i) => {
+                //     let gg = GHlegend.append("g").attr(
+                //         "transform",
+                //         `translate(0, ${i * 30 + 20})`
+                //     );
 
-                    gg.append("rect")
-                        .attr("x", 0)
-                        .attr("y", -10)
-                        .attr("width", 20)
-                        .attr("height", 20)
-                        .attr("fill", gutColors[v] || "#999")
-                        .style("opacity", 0.7)
-                        .attr("stroke", "black");
+                    // gg.append("rect")
+                    //     .attr("x", 0)
+                    //     .attr("y", -10)
+                    //     .attr("width", 20)
+                    //     .attr("height", 20)
+                    //     .attr("fill", gutColors[v] || "#999")
+                    //     .style("opacity", 0.7)
+                    //     .attr("stroke", "black");
 
                     // gg.append("text")
                     //     .attr("x", 30)
@@ -412,12 +415,12 @@ Day${currentDay}: ${d["day" + currentDay]}
                     //     .text(`GH=${v}`);
 
                     
-                    gg.append("text")
-                        .attr("x", 30)
-                        .attr("y", 0)
-                        .style("font-size", "14px")
-                        .text(healthLabels[v] || "Unknown");
-                });
+                //     gg.append("text")
+                //         .attr("x", 30)
+                //         .attr("y", 0)
+                //         .style("font-size", "14px")
+                //         .text(healthLabels[v] || "Unknown");
+                // });
                 // NVIOHIOVBNIOHNIEWOGHIOWGH
             }
 
