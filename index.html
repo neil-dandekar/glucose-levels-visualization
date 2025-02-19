@@ -50,7 +50,7 @@
         </div>
 
         <script>
-            const margin = [100, 100, 100, 150];
+            const margin = [130, 100, 100, 150];
             let width = window.innerWidth,
                 height = window.innerHeight;
 
@@ -257,6 +257,7 @@
                         tooltip.html(`
 <b>ID:</b> ${d.participant_id}<br/>
 Gender: ${d.gender} <br/>
+Age: ${d.age}<br/>
 Gut: ${healthStatus} <br/>
 BMI: ${d.bmi.toFixed(2)}<br/>
 Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
