@@ -46,7 +46,7 @@
 
         <script>
             const margin = [120, 100, 100, 180];
-            let width = window.innerWidth,
+            let width = window.innerWidth ,
                 height = window.innerHeight;
 
             let svg, tooltip, simulation, circles;
@@ -70,8 +70,8 @@
             function initChart(data) {
                 d3.select("svg").remove();
 
-                width = window.innerWidth;
-                height = window.innerHeight;
+                width = 2200;
+                height = 1250;
 
                 svg = d3
                     .select("body")
