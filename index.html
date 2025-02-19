@@ -63,9 +63,9 @@
 
             // Discrete color mapping for gut health => 1,2,3
             const gutColors = {
-                1: "#a8c8ea", // light blue
+                3: "#a8c8ea", // light blue
                 2: "#4f93d2", // medium
-                3: "#084594", // dark
+                1: "#084594", // dark
             };
 
             // We'll keep a reference for yScale to debug
@@ -144,7 +144,7 @@
                 let sizeScale = d3
                     .scaleLinear()
                     .domain(bmiExtent)
-                    .range([4, 36])
+                    .range([3, 20])
                     .clamp(true);
 
                 // Axes
@@ -316,6 +316,7 @@ Day${currentDay}: ${d["day" + currentDay]}
                     .text("Gut Health");
 
                 let ghVals = [1, 2, 3];
+                const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
                 ghVals.forEach((v, i) => {
                     let gg = GHlegend.append("g").attr(
                         "transform",
@@ -331,12 +332,20 @@ Day${currentDay}: ${d["day" + currentDay]}
                         .style("opacity", 0.7)
                         .attr("stroke", "black");
 
+                    // gg.append("text")
+                    //     .attr("x", 30)
+                    //     .attr("y", 0)
+                    //     .style("font-size", "14px")
+                    //     .text(`GH=${v}`);
+
+                    
                     gg.append("text")
                         .attr("x", 30)
                         .attr("y", 0)
                         .style("font-size", "14px")
-                        .text(`GH=${v}`);
+                        .text(healthLabels[v] || "Unknown");
                 });
+                // NVIOHIOVBNIOHNIEWOGHIOWGH
             }
 
             function ticked() {
