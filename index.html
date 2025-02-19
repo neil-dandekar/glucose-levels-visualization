@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script src="https://d3js.org/d3.v5.min.js"></script>
-        <title>D3 Swarm - Day Slider (Discrete GH)</title>
+        <title>Unraveling Glucose Patterns</title>
         <style>
             html,
             body {
@@ -24,16 +24,38 @@
                 background: rgba(255, 255, 255, 0.8);
                 padding: 10px;
                 border-radius: 8px;
-            
             }
-            #controls label{
+            #controls label {
                 font-size: larger;
                 font-weight: bold;
+            }
+
+            /* "Learn More" link in the top-right corner */
+            #learnMoreLink {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                z-index: 999;
+                background-color: #fff;
+                padding: 10px 15px;
+                border: 1px solid #000;
+                border-radius: 8px;
+                text-decoration: none;
+                color: #000;
+                font-weight: bold;
+                /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5); */
+            }
+            #learnMoreLink:hover {
+                background-color: #f0f0f0;
             }
         </style>
     </head>
 
     <body>
+        <!-- "Learn More" link to writeup.html -->
+        <a id="learnMoreLink" href="writeup.html" target="_blank">
+            Learn More
+        </a>
         <div id="controls">
             <label for="daySlider">
                 Select Day:
@@ -110,24 +132,27 @@
                     .style("font-size", "28px")
                     .style("font-weight", "bold")
                     // .text("D3 Swarm - Day Slider (Discrete GH)");
-                    .text("From Normal to Risk: Understanding Diabetes Stages");
-                    
-                const annotation = ["This plot compares the average glucose levels of patients categorized as by diabetic status, with bubble size representing BMI and color indicating gut health status over 10 days.",
-                        "Biggest Takeaway: Type 2 diabetics show much higher variability in average glucose levels. Non-diabetic and pre-diabetic groups have more stable glucose levels."]
+                    .text(
+                        "Unraveling Glucose Patterns: A 10-Day Look at Diabetes & Health"
+                    );
+
+                const annotation = [
+                    "This plot compares the average glucose levels of patients categorized as by diabetic status, with bubble size representing BMI and color indicating gut health status over 10 days.",
+                    "Biggest Takeaway: Type 2 diabetics show much higher variability in average glucose levels. Non-diabetic and pre-diabetic groups have more stable glucose levels.",
+                ];
                 // Subtitle
                 svg.append("text")
                     .attr("x", width / 2)
                     .attr("y", margin[0] / 2 + 30)
                     .attr("text-anchor", "middle")
                     .style("font-size", "15px")
-                    .selectAll('tspan')
+                    .selectAll("tspan")
                     .data(annotation)
                     .enter()
                     .append("tspan")
-                    .attr("x", width / 2)  // Keep x position the same
-                    .attr("dy", (d, i) => i * 20)  // ✅ Move each line down
-                    .text(d => d);
-                
+                    .attr("x", width / 2) // Keep x position the same
+                    .attr("dy", (d, i) => i * 20) // ✅ Move each line down
+                    .text((d) => d);
 
                 // Gather all day columns
                 let allDays = [];
@@ -189,7 +214,6 @@
                     .attr("transform", "rotate(-90)")
                     .style("font-size", "18px")
                     .text("Avgerage Glucose Level (mg/dL)");
-                
 
                 // Single force sim with moderate y strength for smoother transitions
                 simulation = d3
@@ -197,8 +221,7 @@
                     .force(
                         "x",
                         d3
-                            .forceX(
-                                (d) => {
+                            .forceX((d) => {
                                 if (
                                     !diabetesCategories.includes(
                                         d.diabetes_status
@@ -253,16 +276,17 @@
                             .style("opacity", 1);
                     })
                     .on("mousemove", function (d) {
-			let healthStatus = healthLabels[d.gut_microbiome_health] || "Unknown";
+                        let healthStatus =
+                            healthLabels[d.gut_microbiome_health] || "Unknown";
                         let e = d3.event;
                         tooltip.html(`
-<b>ID:</b> ${d.participant_id}<br/>
-Gender: ${d.gender} <br/>
-Age: ${d.age}<br/>
-Gut: ${healthStatus} <br/>
-BMI: ${d.bmi.toFixed(2)}<br/>
-Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
-            `);
+            <b>ID:</b> ${d.participant_id}<br/>
+            Gender: ${d.gender} <br/>
+            Age: ${d.age}<br/>
+            Gut: ${healthStatus} <br/>
+            BMI: ${d.bmi.toFixed(2)}<br/>
+            Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
+                        `);
                         let tipW = tooltip.node().offsetWidth;
                         let tipH = tooltip.node().offsetHeight;
                         tooltip
@@ -281,12 +305,17 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
                 setTimeout(() => simulation.alphaDecay(0.1), 3000);
 
                 // ========== Combined Legend Box ========== //
-                let legendBox = svg.append("g")
-                    .attr("transform", `translate(${width - 270}, ${margin[0] + 50})`);
+                let legendBox = svg
+                    .append("g")
+                    .attr(
+                        "transform",
+                        `translate(${width - 270}, ${margin[0] + 50})`
+                    );
 
                 // Adjusted Box Size for More Space
-                legendBox.append("rect")
-                    .attr("width", 240)  // Slightly wider to prevent text overflow
+                legendBox
+                    .append("rect")
+                    .attr("width", 240) // Slightly wider to prevent text overflow
                     .attr("height", 450) // Increased height for better spacing
                     .attr("fill", "white")
                     .attr("stroke", "black")
@@ -295,36 +324,40 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
                     .attr("opacity", 0.8);
 
                 // Title: "Key"
-                legendBox.append("text")
-                    .attr("x", 120)  // Centered inside the box
+                legendBox
+                    .append("text")
+                    .attr("x", 120) // Centered inside the box
                     .attr("y", 30)
                     .attr("text-anchor", "middle")
                     .style("font-size", "16px")
                     .style("font-weight", "bold")
                     .text("Key");
                 // underline for the "Key"
-                legendBox.append("line")
-                    .attr("x1", 105)   
+                legendBox
+                    .append("line")
+                    .attr("x1", 105)
                     .attr("x2", 135)
                     .attr("y1", 35)
                     .attr("y2", 35)
                     .attr("stroke", "black")
-                    .attr("stroke-width", 1); 
+                    .attr("stroke-width", 1);
 
                 // ========== BMI Legend (More Space) ========== //
-                let BMIlegend = legendBox.append("g")
-                    .attr("transform", `translate(10, 80)`);  // Slightly shifted
+                let BMIlegend = legendBox
+                    .append("g")
+                    .attr("transform", `translate(10, 80)`); // Slightly shifted
 
                 BMIlegend.append("text")
                     .attr("x", 0)
-                    .attr("y",-10)
+                    .attr("y", -10)
                     .style("font-size", "14px")
                     .style("font-weight", "bold")
                     .text("BMI Sizes");
 
                 // ========== Gut Health Legend (More Space) ========== //
-                let GHlegend = legendBox.append("g")
-                    .attr("transform", `translate(10, 350)`);  // Shifted down further
+                let GHlegend = legendBox
+                    .append("g")
+                    .attr("transform", `translate(10, 350)`); // Shifted down further
 
                 GHlegend.append("text")
                     .attr("x", 0)
@@ -333,10 +366,16 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
                     .style("font-weight", "bold")
                     .text("Gut Health");
 
-                const healthLabels = { 1: "Healthy", 2: "Moderate", 3: "Unhealthy" };
+                const healthLabels = {
+                    1: "Healthy",
+                    2: "Moderate",
+                    3: "Unhealthy",
+                };
                 [1, 2, 3].forEach((v, i) => {
-                    let gg = GHlegend.append("g")
-                        .attr("transform", `translate(0, ${i * 35 + 10})`);  // More spacing
+                    let gg = GHlegend.append("g").attr(
+                        "transform",
+                        `translate(0, ${i * 35 + 10})`
+                    ); // More spacing
 
                     gg.append("rect")
                         .attr("x", 0)
@@ -354,26 +393,27 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
                         .text(healthLabels[v]);
                 });
 
-
-
                 // use quartiles 27,30,35
                 const BMI_VALUES = [20, 25, 30, 35, 40, 50]; // Expanded range for better scaling
                 BMI_VALUES.forEach((b, i) => {
-                     let g = BMIlegend.append("g")
-                     .attr("transform", `translate(20, ${i * 38})`); // Adjust spacing
+                    let g = BMIlegend.append("g").attr(
+                        "transform",
+                        `translate(20, ${i * 38})`
+                    ); // Adjust spacing
 
-                g.append("circle")
-                .attr("cx", 30) // Slightly right for better alignment
-                .attr("cy", 0)
-                .attr("r", sizeScale(b)) // Use size scale to adjust circle size
-                .attr("fill", "gray")
-                .attr("stroke", "black")
-                .style("opacity", 0.7);
-                
-                g.append("text")
-                .attr("x", 70) // Position text to the right
-                .attr("y", 5)
-                .style("font-size", "14px") .text(`BMI: ${b}`); 
+                    g.append("circle")
+                        .attr("cx", 30) // Slightly right for better alignment
+                        .attr("cy", 0)
+                        .attr("r", sizeScale(b)) // Use size scale to adjust circle size
+                        .attr("fill", "gray")
+                        .attr("stroke", "black")
+                        .style("opacity", 0.7);
+
+                    g.append("text")
+                        .attr("x", 70) // Position text to the right
+                        .attr("y", 5)
+                        .style("font-size", "14px")
+                        .text(`BMI: ${b}`);
                 });
             }
 
@@ -432,7 +472,8 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
 
                         console.log(`Animating Day: ${currentDay}`); // Debug log
                         slider.value = currentDay; // Move the slider
-                        document.getElementById("dayValue").textContent = currentDay;
+                        document.getElementById("dayValue").textContent =
+                            currentDay;
                         updateDay(currentDay); // Update visualization
 
                         currentDay++;
@@ -441,9 +482,10 @@ Avg. Glucose Level: ${d["day" + currentDay].toFixed(2)}<br/>
             }
 
             document.addEventListener("DOMContentLoaded", () => {
-                document.getElementById("animateButton").addEventListener("click", animateSlider);
-                });
-
+                document
+                    .getElementById("animateButton")
+                    .addEventListener("click", animateSlider);
+            });
 
             d3.csv("data.csv").then((data) => {
                 data.forEach((d) => {

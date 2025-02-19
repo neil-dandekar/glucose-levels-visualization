@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Unraveling Glucose Patterns</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                background-color: #f4f4f4;
+                color: #333;
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 20px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #4a5875;
+                text-align: center;
+            }
+            h2 {
+                color: #6a7da3;
+            }
+            h3 {
+                color: #7d94c1;
+            }
+            .authors {
+                font-style: italic;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            p {
+                text-align: justify;
+            }
+            .section {
+                margin-bottom: 20px;
+            }
+            .acknowledgement {
+                font-weight: bold;
+                text-align: center;
+                margin-top: 30px;
+                color: #8a9db7;
+            }
+            ul {
+                margin: 1em 0 1em 2em;
+            }
+            li {
+                margin-bottom: 0.5em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            Unraveling Glucose Patterns: A 10-Day Look at Diabetes &amp; Health
+        </h1>
+        <p class="authors">
+            The Avengers: Neil Dandekar, Avi Mehta, Kevin Souder, Idhant Kumar
+        </p>
+
+        <!-- Introduction -->
+        <div class="section">
+            <h2>Introduction</h2>
+            <p>
+                Our team, The Avengers, chose to dive deeper into the
+                <a
+                    href="https://physionet.org/content/cgmacros/1.0.0/"
+                    target="_blank"
+                    >CGMacros Dataset</a
+                >
+                from the PhysioNet Databases. All three of us have a close
+                relative or friend who has struggled with diabetes. Therefore,
+                we felt compelled to make a visualization which allowed
+                researchers to explore data more easily, which may help them
+                make better and cheaper solutions for those with the disease.
+            </p>
+            <p>
+                In particular, we explored how the daily average glucose level
+                fluctuated throughout the 10-day period and across all 45
+                participants in the study. Diabetes is a disease which affects
+                glucose metabolism, therefore, analyzing glucose fluctuations
+                over time was key to our visualization. Our goal is to answer
+                questions regarding which factors may affect these fluctuations.
+                with different diabetes status differs from one another
+                throughout a 10 day study. Our take includes a bee swarm
+                visualization, where each “bee” or blob represents an individual
+                participant’s glucose level. Participants are also grouped by
+                either non-diabetic, diabetic, or type 2 diabetic. We also
+                incorporated a slider to view the data for each day of the
+                study, with an option to animate the slider to loop through the
+                day's automatically. In addition, The relative size of a blob
+                represents the participant’s BMI and its shade of blue
+                represents their microbiome gut health, where lighter blue is
+                healthier. Overall, the chart is visually appealing, fluid, and
+                easy to digest. Furthermore, it allows for easy analysis of the
+                dataset.
+            </p>
+        </div>
+
+        <!-- Design Rationale -->
+        <div class="section">
+            <h2>Design Rationale</h2>
+            <p>
+                We considered multiple options originally. From line plots, to
+                bar charts, to a visualization of the human body, we weren’t
+                convinced that these would do the data justice. We wanted
+                something more fluid as the goal was to make an interactive
+                visualization.
+            </p>
+            <p>
+                After researching online, we came across some example
+                <a
+                    href="https://datavizcatalogue.com/blog/chart-snapshot-beeswarm-plot/"
+                    target="_blank"
+                    >bee swarm charts</a
+                >
+                which we immediately started to play with. As the time series
+                glucose data was the center of attention, we based the main axes
+                around this data. Furthermore, it only made sense to use
+                categorical data on the x-axis. We chose the patients’ diabetes
+                status for the groupings because we assumed that trends within
+                each group were most important for studying.
+            </p>
+            <p>
+                Another benefit to the bee swarm is the option to encode
+                additional variables. For example, we used blob size and color
+                to encode BMI and gut microbiome health. We decided that the
+                visual size of a blob directly corresponds to a physical
+                attribute like BMI which is, in a sense, related to the physical
+                size of participants. We also wanted to indicate other health
+                attributes about patients and realized that gut health may
+                greatly affect one’s metabolism and glucose levels. Health is
+                easy to categorize by color, so we chose a color encoding for
+                this variable. We used a blue, monochromatic scale because it’s
+                easy to interpret, and easy on the eyes. To help interpret these
+                encodings, we used visual size scales for the BMI size legend
+                and color labels for the gut health. With multiple displayed
+                sizes for the BMI chart, the user is able to more easily
+                interpret the blob sizes. However, to view exact data, as well
+                as more attributes about individual participants (age, gender,
+                etc.), users can hover over blobs for a tooltip of info.
+            </p>
+            <p>
+                Perhaps our most interactive element is the slider. The time
+                series portion of this data was key and we loved the idea of
+                being able to animate our visualization to display trends over
+                time. Since time is a linear scale, we thought of a horizontal
+                slider for the user to select different days of the study to
+                display. Additionally, we added an “Animate” button to bring the
+                data to life and automatically move throughout time. This
+                utilized JavaScript’s <code>setInterval()</code> function that
+                animated the Day Slider in a continuous loop, and could be
+                stopped at the user’s discretion. By stopping at discrete days,
+                users can make more in-depth observations for each day, and by
+                animating, the user can get a better sense of the fluctuation
+                trends over time. To make the blobs more fluid, we used the D3
+                force library to make the blobs bounce around and slide between
+                each other.
+            </p>
+        </div>
+
+        <!-- Development Process and Time Allocation -->
+        <div class="section">
+            <h2>Development Process and Time Allocation</h2>
+            <p>
+                Initially, our group met in person to brainstorm datasets to
+                visualize, which charts to use, and ultimately settled on our
+                design choices. We also did some introductory Exploratory Data
+                Analysis (EDA) on a single computer together to draft some
+                initial plots and ideas.
+            </p>
+            <p>
+                Idhant spliced together some of the different csv files in the
+                database to create a combined overview of data, including stats
+                about each participant, in addition to the glucose data. Neil
+                used python scripts to concatenate, clean, and merge all 45
+                individual participant files into one large dataset, which was
+                also grouped by individual day in the study and the mean glucose
+                level was recorded as separate columns to be displayed.
+            </p>
+            <p>
+                All of us were new to D3.js so it took some time getting
+                familiar with. We spent some time also reviewing the
+                documentation and watching YouTube videos to get a grasp.
+            </p>
+            <p>
+                As time went on, we distributed the programming tasks in
+                parallel. After initializing a GitHub repository, each of us
+                created our own branches to work on separate features. We
+                developed the chart entirely in D3, combining HTML, CSS, and
+                JavaScript to combine the design, content, layout, and
+                interaction.
+            </p>
+            <p>
+                Overall, the tasks and time were split as followed (total: ~26
+                hours):
+            </p>
+            <ul>
+                <li>1. Brainstorming and planning (all members, ~5 hours)</li>
+                <li>2. Learning D3.js (all members, ~2 hours)</li>
+                <li>
+                    3. Finalizing visualization design rationale (Avi &amp;
+                    Kevin, ~2 hours)
+                </li>
+                <li>
+                    4. EDA (Idhant, Kevin, &amp; Neil, ~6 hours)
+                    <ul>
+                        <li>Kevin: initial EDA charts</li>
+                        <li>
+                            Idhant: combining individual participant attributes
+                            with glucose data
+                        </li>
+                        <li>Neil: time series glucose data aggregation</li>
+                    </ul>
+                </li>
+                <li>
+                    5. Programming (Avi, Kevin, &amp; Neil, ~11 hours)
+                    <ul>
+                        <li>
+                            Various tasks split between all from designing the
+                            scales, axes, titles, colors, legend, and slider
+                            (+animation)
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Acknowledgment -->
+        <p class="acknowledgement">
+            Acknowledgement: We wanted to give a special thanks to TA Chris Lum
+            for inspiration and helping us improve our visualization.
+        </p>
+    </body>
+</html>
