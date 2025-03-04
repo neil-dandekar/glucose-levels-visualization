@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <title>Unraveling Glucose Patterns</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+
+    <body>
+        <!-- "Learn More" link to writeup.html -->
+        <a id="learnMoreLink" href="writeup.html" target="_blank">
+            Learn More
+        </a>
+        <div id="controls">
+            <label for="daySlider">
+                Select Day:
+                <span id="dayValue">1</span>
+            </label>
+            <input
+                type="range"
+                id="daySlider"
+                min="1"
+                max="10"
+                step="1"
+                value="1"
+            />
+            <button id="animateButton">▶ Animate</button>
+        </div>
+        
+        <script type="module" src="./main.js"></script>
+    </body>
+</html>
